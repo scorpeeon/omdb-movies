@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">OMDB movies</string>
     <string name="title_movie_detail">Movie Detail</string>
+    <string name="enter_search_string">Enter search string</string>
+    <string name="title">Title: %1$s</string>
+    <string name="date">Release Date: %1$s</string>
+    <string name="actors">Actors: %1$s</string>
+    <string name="production">Production: %1$s</string>
+    <string name="genre">Genre: %1$s</string>
+    <string name="plot">Plot: %1$s</string>
 </resources>
