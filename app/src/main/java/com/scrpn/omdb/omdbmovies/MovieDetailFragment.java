@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.scrpn.omdb.omdbmovies.network.ApiClient;
 import com.scrpn.omdb.omdbmovies.network.OmdbApi;
 import com.scrpn.omdb.omdbmovies.network.model.DetailedMovie;
-import com.squareup.picasso.Picasso;
 
 import java.net.HttpURLConnection;
 
@@ -98,7 +98,7 @@ public class MovieDetailFragment extends Fragment {
 
         ImageView toolbarImage = (ImageView) activity.findViewById(R.id.toolbar_image);
         if (toolbarImage != null) {
-            Picasso.get().load(movie.getPoster()).into(toolbarImage);
+            Glide.with(this).load(movie.getPoster()).into(toolbarImage);
         }
 
         movieTitle.setText(getString(R.string.title, movie.getTitle()));
