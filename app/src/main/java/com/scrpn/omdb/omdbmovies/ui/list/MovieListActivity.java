@@ -37,12 +37,14 @@ public class MovieListActivity extends BaseActivity implements MovieListScreen, 
     @BindView(R.id.search_string)
     EditText searchString;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         OmdbMovieApplication.injector.inject(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 

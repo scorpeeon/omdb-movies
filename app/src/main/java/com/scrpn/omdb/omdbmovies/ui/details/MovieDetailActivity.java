@@ -12,12 +12,16 @@ import com.scrpn.omdb.omdbmovies.R;
 import com.scrpn.omdb.omdbmovies.ui.BaseActivity;
 import com.scrpn.omdb.omdbmovies.ui.list.MovieListActivity;
 
+import butterknife.BindView;
+
 public class MovieDetailActivity extends BaseActivity {
+
+    @BindView(R.id.detail_toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
