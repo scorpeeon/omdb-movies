@@ -1,21 +1,22 @@
-package com.scrpn.omdb.omdbmovies;
+package com.scrpn.omdb.omdbmovies.ui.details;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
-public class MovieDetailActivity extends AppCompatActivity {
+import com.scrpn.omdb.omdbmovies.AppComponent;
+import com.scrpn.omdb.omdbmovies.R;
+import com.scrpn.omdb.omdbmovies.ui.BaseActivity;
+import com.scrpn.omdb.omdbmovies.ui.list.MovieListActivity;
+
+public class MovieDetailActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
@@ -37,6 +38,11 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_movie_detail;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
@@ -44,5 +50,10 @@ public class MovieDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void injectDependencies(AppComponent injector) {
+        injector.inject(this);
     }
 }

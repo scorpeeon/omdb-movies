@@ -1,13 +1,12 @@
-package com.scrpn.omdb.omdbmovies;
+package com.scrpn.omdb.omdbmovies.ui.list;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.scrpn.omdb.omdbmovies.R;
 import com.scrpn.omdb.omdbmovies.network.model.Movie;
 
 import java.util.List;

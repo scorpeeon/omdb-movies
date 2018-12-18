@@ -8,4 +8,5 @@
     <string name="production">Production: %1$s</string>
     <string name="genre">Genre: %1$s</string>
     <string name="plot">Plot: %1$s</string>
+    <string name="load_fail_message">Fail to load movies.</string>
 </resources>
