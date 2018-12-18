@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -129,12 +130,12 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
             Glide.with(this).load(movie.getPoster()).into(toolbarImage);
         }
 
-        movieTitle.setText(getString(R.string.title, movie.getTitle()));
-        movieDate.setText(getString(R.string.date, movie.getReleased()));
-        movieActor.setText(getString(R.string.actors, movie.getActors()));
-        movieProduction.setText(getString(R.string.production, movie.getProduction()));
-        movieGenre.setText(getString(R.string.genre, movie.getGenre()));
-        moviePlot.setText(getString(R.string.plot, movie.getPlot()));
+        movieTitle.setText(movie.getTitle());
+        movieDate.setText(Html.fromHtml(getResources().getString(R.string.date, movie.getReleased())));
+        movieActor.setText(Html.fromHtml(getResources().getString(R.string.actors, movie.getActors())));
+        movieProduction.setText(Html.fromHtml(getResources().getString(R.string.production, movie.getProduction())));
+        movieGenre.setText(Html.fromHtml(getResources().getString(R.string.genre, movie.getGenre())));
+        moviePlot.setText(Html.fromHtml(getResources().getString(R.string.plot, movie.getPlot())));
 
     }
 

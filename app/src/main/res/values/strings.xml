@@ -2,11 +2,10 @@
     <string name="app_name">OMDB movies</string>
     <string name="title_movie_detail">Movie Detail</string>
     <string name="enter_search_string">Enter search string</string>
-    <string name="title">Title: %1$s</string>
-    <string name="date">Release Date: %1$s</string>
-    <string name="actors">Actors: %1$s</string>
-    <string name="production">Production: %1$s</string>
-    <string name="genre">Genre: %1$s</string>
-    <string name="plot">Plot: %1$s</string>
+    <string name="date">&lt;b>Release Date:&lt;/b> %1$s</string>
+    <string name="actors">&lt;b>Actors:&lt;/b> %1$s</string>
+    <string name="production">&lt;b>Production:&lt;/b> %1$s</string>
+    <string name="genre">&lt;b>Genre:&lt;/b> %1$s</string>
+    <string name="plot">&lt;b>Plot:&lt;/b> %1$s</string>
     <string name="load_fail_message">Fail to load movies.</string>
 </resources>
