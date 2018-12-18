@@ -1,13 +1,17 @@
 package com.scrpn.omdb.omdbmovies.ui;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.scrpn.omdb.omdbmovies.AppComponent;
 import com.scrpn.omdb.omdbmovies.OmdbMovieApplication;
@@ -44,5 +48,26 @@ public abstract class BaseFragment extends Fragment {
     public void onDestroyView() {
         unbinder.unbind();
         super.onDestroyView();
+    }
+
+    public void navigateToFragment(Fragment fragment) {
+        FragmentActivity activity = getActivity();
+        if (activity != null && activity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) activity;
+            mainActivity.loadFragment(fragment);
+        }
+    }
+
+    public void hideKeyboard() {
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            InputMethodManager inputManager = (InputMethodManager) activity
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            View currentFocusedView = activity.getCurrentFocus();
+            if (currentFocusedView != null) {
+                inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
     }
 }

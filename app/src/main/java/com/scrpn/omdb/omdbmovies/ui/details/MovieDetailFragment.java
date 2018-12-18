@@ -2,14 +2,19 @@ package com.scrpn.omdb.omdbmovies.ui.details;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.scrpn.omdb.omdbmovies.AppComponent;
-import com.scrpn.omdb.omdbmovies.OmdbMovieApplication;
 import com.scrpn.omdb.omdbmovies.R;
 import com.scrpn.omdb.omdbmovies.network.model.DetailedMovie;
 import com.scrpn.omdb.omdbmovies.ui.BaseFragment;
@@ -24,6 +29,12 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
     public static final String ARG_IMDB_ID = "imdb_id";
 
     private DetailedMovie detailedMovie;
+
+    @BindView(R.id.toolbar_image)
+    ImageView toolbarImage;
+
+    @BindView(R.id.detail_toolbar)
+    Toolbar toolbar;
 
     @Inject
     MovieDetailsPresenter presenter;
@@ -46,7 +57,12 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
     @BindView(R.id.movie_plot)
     TextView moviePlot;
 
-    public MovieDetailFragment() {
+    public static MovieDetailFragment newInstance(String imdbId) {
+        Bundle arguments = new Bundle();
+        arguments.putString(ARG_IMDB_ID, imdbId);
+        MovieDetailFragment fragment = new MovieDetailFragment();
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     @Override
@@ -55,6 +71,24 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
 
         if (getArguments().containsKey(ARG_IMDB_ID)) {
             presenter.getMovieDetails(getArguments().getString(ARG_IMDB_ID));
+        }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupToolbar();
+    }
+
+    private void setupToolbar() {
+        FragmentActivity activity = getActivity();
+        if (activity != null && getActivity() instanceof AppCompatActivity) {
+            AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
+            appCompatActivity.setSupportActionBar(toolbar);
+            if (appCompatActivity.getSupportActionBar() != null) {
+                appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                appCompatActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
         }
     }
 
@@ -82,7 +116,6 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
             appBarLayout.setTitle(movie.getTitle());
         }
 
-        ImageView toolbarImage = (ImageView) activity.findViewById(R.id.toolbar_image);
         if (toolbarImage != null) {
             Glide.with(this).load(movie.getPoster()).into(toolbarImage);
         }
@@ -109,6 +142,6 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.movie_detail;
+        return R.layout.fragment_movie_detail;
     }
 }

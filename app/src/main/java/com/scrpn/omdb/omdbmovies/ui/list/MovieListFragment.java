@@ -1,21 +1,21 @@
 package com.scrpn.omdb.omdbmovies.ui.list;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 
 import com.scrpn.omdb.omdbmovies.AppComponent;
-import com.scrpn.omdb.omdbmovies.OmdbMovieApplication;
 import com.scrpn.omdb.omdbmovies.R;
 import com.scrpn.omdb.omdbmovies.network.model.Movie;
-import com.scrpn.omdb.omdbmovies.ui.BaseActivity;
-import com.scrpn.omdb.omdbmovies.ui.details.MovieDetailActivity;
+import com.scrpn.omdb.omdbmovies.ui.BaseFragment;
 import com.scrpn.omdb.omdbmovies.ui.details.MovieDetailFragment;
 
 import java.util.List;
@@ -24,9 +24,9 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
-public class MovieListActivity extends BaseActivity implements MovieListScreen, OnMovieSelectedListener {
+public class MovieListFragment extends BaseFragment implements MovieListScreen, OnMovieSelectedListener {
 
-    private static final String TAG = MovieListActivity.class.getSimpleName();
+    private static final String TAG = MovieListFragment.class.getSimpleName();
 
     @Inject
     MovieListPresenter presenter;
@@ -41,12 +41,13 @@ public class MovieListActivity extends BaseActivity implements MovieListScreen, 
     Toolbar toolbar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        OmdbMovieApplication.injector.inject(this);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
+        FragmentActivity activity = getActivity();
+        if (activity!= null) {
+            toolbar.setTitle(activity.getTitle());
+        }
 
         searchString.addTextChangedListener(new TextWatcher() {
             @Override
@@ -68,7 +69,7 @@ public class MovieListActivity extends BaseActivity implements MovieListScreen, 
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.activity_movie_list;
+        return R.layout.fragment_movie_list;
     }
 
     @Override
@@ -87,15 +88,14 @@ public class MovieListActivity extends BaseActivity implements MovieListScreen, 
 
     @Override
     public void onMovieSelected(String imdbId) {
-        Intent intent = new Intent(MovieListActivity.this, MovieDetailActivity.class);
-        intent.putExtra(MovieDetailFragment.ARG_IMDB_ID, imdbId);
 
-        startActivity(intent);
+        hideKeyboard();
+        navigateToFragment(MovieDetailFragment.newInstance(imdbId));
     }
 
     @Override
     public void onMoviesLoaded(List<Movie> movies) {
-        recyclerView.setAdapter(new MovieRecyclerViewAdapter(movies, MovieListActivity.this));
+        recyclerView.setAdapter(new MovieRecyclerViewAdapter(movies, MovieListFragment.this));
     }
 
     @Override

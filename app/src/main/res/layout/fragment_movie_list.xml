@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.list.MovieListActivity">
+    tools:context=".ui.list.MovieListFragment">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -31,7 +31,10 @@
             android:id="@+id/search_string"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_search_string"/>
+            android:hint="@string/enter_search_string"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:imeOptions="actionDone"/>
 
         <FrameLayout
             android:id="@+id/frameLayout"
