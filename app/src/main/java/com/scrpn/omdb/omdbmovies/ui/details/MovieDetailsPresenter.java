@@ -26,15 +26,21 @@ public class MovieDetailsPresenter extends Presenter<MovieDetailsScreen> {
 
     public void getMovieDetails(String imdbId) {
 
+        if (screen != null) {
+            screen.showLoading(true);
+        }
         Call<DetailedMovie> call = apiService.getMovie(imdbId, BuildConfig.OMDB_API_KEY);
         call.enqueue(new Callback<DetailedMovie>() {
             @Override
             public void onResponse(@NonNull Call<DetailedMovie> call, @NonNull Response<DetailedMovie> response) {
+                if (screen != null) {
+                    screen.showLoading(false);
+                }
                 int statusCode = response.code();
                 if (statusCode == HttpURLConnection.HTTP_OK) {
                     DetailedMovie movie = response.body();
 
-                    if (movie != null) {
+                    if (movie != null && screen != null) {
                         screen.onMovieLoaded(movie);
                     }
                 }
@@ -42,7 +48,9 @@ public class MovieDetailsPresenter extends Presenter<MovieDetailsScreen> {
 
             @Override
             public void onFailure(@NonNull Call<DetailedMovie> call, @NonNull Throwable t) {
-                screen.onLoadFailed();
+                if (screen != null) {
+                    screen.onLoadFailed();
+                }
             }
         });
     }

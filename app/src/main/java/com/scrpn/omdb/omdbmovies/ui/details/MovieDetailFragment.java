@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,6 +41,9 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
     @Inject
     MovieDetailsPresenter presenter;
 
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
+
     @BindView(R.id.movie_title)
     TextView movieTitle;
 
@@ -57,6 +62,8 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
     @BindView(R.id.movie_plot)
     TextView moviePlot;
 
+    private String imdbId;
+
     public static MovieDetailFragment newInstance(String imdbId) {
         Bundle arguments = new Bundle();
         arguments.putString(ARG_IMDB_ID, imdbId);
@@ -69,8 +76,9 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_IMDB_ID)) {
-            presenter.getMovieDetails(getArguments().getString(ARG_IMDB_ID));
+        if (getArguments() != null && getArguments().containsKey(ARG_IMDB_ID)) {
+            imdbId = getArguments().getString(ARG_IMDB_ID);
+            presenter.getMovieDetails(imdbId);
         }
     }
 
@@ -78,6 +86,7 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupToolbar();
+        setupSwipeRefreshLayout();
     }
 
     private void setupToolbar() {
@@ -130,6 +139,11 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
     }
 
     @Override
+    public void showLoading(boolean loading) {
+        swipeRefreshLayout.setRefreshing(loading);
+    }
+
+    @Override
     public void onMovieLoaded(DetailedMovie movie) {
         detailedMovie = movie;
         setLayout(movie);
@@ -143,5 +157,15 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
     @Override
     protected int getLayoutResource() {
         return R.layout.fragment_movie_detail;
+    }
+
+    private void setupSwipeRefreshLayout() {
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(requireContext(), R.color.colorAccent));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.getMovieDetails(imdbId);
+            }
+        });
     }
 }

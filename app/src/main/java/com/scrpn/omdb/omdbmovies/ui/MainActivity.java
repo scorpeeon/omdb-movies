@@ -23,7 +23,10 @@ public class MainActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-        loadFragment(new MovieListFragment());
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, new MovieListFragment())
+                .commit();
     }
 
     public void loadFragment(Fragment fragment) {

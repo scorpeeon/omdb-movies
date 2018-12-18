@@ -26,17 +26,23 @@ public class MovieListPresenter extends Presenter<MovieListScreen> {
 
     }
 
-    void refreshItems(String searchString) {
+    public void refreshItems(String searchString) {
 
+        if (screen != null) {
+            screen.showLoading(true);
+        }
         Call<SearchResponse> call = apiService.getMovies("movie", searchString, BuildConfig.OMDB_API_KEY);
         call.enqueue(new Callback<SearchResponse>() {
             @Override
             public void onResponse(@NonNull Call<SearchResponse> call, @NonNull Response<SearchResponse> response) {
+                if (screen != null) {
+                    screen.showLoading(false);
+                }
                 int statusCode = response.code();
                 if (statusCode == HttpURLConnection.HTTP_OK) {
                     List<Movie> movies = response.body() != null ? response.body().getSearch() : null;
 
-                    if (movies != null) {
+                    if (movies != null && screen != null) {
                         screen.onMoviesLoaded(movies);
                     }
                 }
@@ -44,7 +50,9 @@ public class MovieListPresenter extends Presenter<MovieListScreen> {
 
             @Override
             public void onFailure(@NonNull Call<SearchResponse> call, @NonNull Throwable t) {
-                screen.onLoadFailed();
+                if (screen != null) {
+                    screen.onLoadFailed();
+                }
             }
         });
     }

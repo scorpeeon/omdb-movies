@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -31,6 +33,9 @@ public class MovieListFragment extends BaseFragment implements MovieListScreen, 
     @Inject
     MovieListPresenter presenter;
 
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
+
     @BindView(R.id.movie_list)
     RecyclerView recyclerView;
 
@@ -44,11 +49,22 @@ public class MovieListFragment extends BaseFragment implements MovieListScreen, 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        FragmentActivity activity = getActivity();
-        if (activity!= null) {
-            toolbar.setTitle(activity.getTitle());
-        }
+        setupToolbar();
+        setTextChangedListener();
+        setupRecyclerView();
+    }
 
+    private void setupRecyclerView() {
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(requireContext(), R.color.colorAccent));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.refreshItems(searchString.getText().toString());
+            }
+        });
+    }
+
+    private void setTextChangedListener() {
         searchString.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -65,6 +81,13 @@ public class MovieListFragment extends BaseFragment implements MovieListScreen, 
                 presenter.refreshItems(s.toString());
             }
         });
+    }
+
+    private void setupToolbar() {
+        FragmentActivity activity = getActivity();
+        if (activity!= null) {
+            toolbar.setTitle(activity.getTitle());
+        }
     }
 
     @Override
@@ -91,6 +114,11 @@ public class MovieListFragment extends BaseFragment implements MovieListScreen, 
 
         hideKeyboard();
         navigateToFragment(MovieDetailFragment.newInstance(imdbId));
+    }
+
+    @Override
+    public void showLoading(boolean loading) {
+        swipeRefreshLayout.setRefreshing(loading);
     }
 
     @Override
