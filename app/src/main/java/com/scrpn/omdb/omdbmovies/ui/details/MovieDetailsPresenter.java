@@ -11,6 +11,9 @@ import java.net.HttpURLConnection;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,29 +32,17 @@ public class MovieDetailsPresenter extends Presenter<MovieDetailsScreen> {
         if (screen != null) {
             screen.showLoading(true);
         }
-        Call<DetailedMovie> call = apiService.getMovie(imdbId, BuildConfig.OMDB_API_KEY);
-        call.enqueue(new Callback<DetailedMovie>() {
-            @Override
-            public void onResponse(@NonNull Call<DetailedMovie> call, @NonNull Response<DetailedMovie> response) {
-                if (screen != null) {
-                    screen.showLoading(false);
-                }
-                int statusCode = response.code();
-                if (statusCode == HttpURLConnection.HTTP_OK) {
-                    DetailedMovie movie = response.body();
-
-                    if (movie != null && screen != null) {
-                        screen.onMovieLoaded(movie);
+        Observable<DetailedMovie> movie = apiService.getMovie(imdbId, BuildConfig.OMDB_API_KEY);
+        movie
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    if (screen != null) {
+                        screen.showLoading(false);
+                        screen.onMovieLoaded(result);
                     }
-                }
-            }
+                });
 
-            @Override
-            public void onFailure(@NonNull Call<DetailedMovie> call, @NonNull Throwable t) {
-                if (screen != null) {
-                    screen.onLoadFailed();
-                }
-            }
-        });
+        // TODO call screen.onLoadFailed();
     }
 }

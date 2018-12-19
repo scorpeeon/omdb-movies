@@ -13,6 +13,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,29 +34,19 @@ public class MovieListPresenter extends Presenter<MovieListScreen> {
         if (screen != null) {
             screen.showLoading(true);
         }
-        Call<SearchResponse> call = apiService.getMovies("movie", searchString, BuildConfig.OMDB_API_KEY);
-        call.enqueue(new Callback<SearchResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<SearchResponse> call, @NonNull Response<SearchResponse> response) {
-                if (screen != null) {
-                    screen.showLoading(false);
-                }
-                int statusCode = response.code();
-                if (statusCode == HttpURLConnection.HTTP_OK) {
-                    List<Movie> movies = response.body() != null ? response.body().getSearch() : null;
-
-                    if (movies != null && screen != null) {
-                        screen.onMoviesLoaded(movies);
+        Observable<SearchResponse> movies = apiService.getMovies("movie", searchString, BuildConfig.OMDB_API_KEY);
+        movies
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    if (screen != null) {
+                        screen.showLoading(false);
+                        if (result.getSearch() != null) {
+                            screen.onMoviesLoaded(result.getSearch());
+                        }
                     }
-                }
-            }
+                });
 
-            @Override
-            public void onFailure(@NonNull Call<SearchResponse> call, @NonNull Throwable t) {
-                if (screen != null) {
-                    screen.onLoadFailed();
-                }
-            }
-        });
+        // TODO call screen.onLoadFailed();
     }
 }
