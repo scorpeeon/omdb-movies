@@ -2,6 +2,7 @@ package com.scrpn.omdb.omdbmovies.ui.list;
 
 import com.scrpn.omdb.omdbmovies.BuildConfig;
 import com.scrpn.omdb.omdbmovies.RxPresenter;
+import com.scrpn.omdb.omdbmovies.interactor.NetworkInteractor;
 import com.scrpn.omdb.omdbmovies.network.OmdbApi;
 import com.scrpn.omdb.omdbmovies.network.model.SearchResponse;
 
@@ -13,7 +14,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MovieListPresenter extends RxPresenter<MovieListScreen> {
     @Inject
-    OmdbApi apiService;
+    NetworkInteractor networkInteractor;
 
     @Inject
     public MovieListPresenter() {
@@ -26,7 +27,7 @@ public class MovieListPresenter extends RxPresenter<MovieListScreen> {
             screen.showLoading(true);
         }
         attachDisposable(
-                apiService.getMovies("movie", searchString, BuildConfig.OMDB_API_KEY)
+                networkInteractor.getMovies(searchString)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -38,6 +39,7 @@ public class MovieListPresenter extends RxPresenter<MovieListScreen> {
                     }
                 }, error -> {
                     if (screen != null) {
+                        screen.showLoading(false);
                         screen.onLoadFailed();
                     }
                 }));
