@@ -79,7 +79,6 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
 
         if (getArguments() != null && getArguments().containsKey(ARG_IMDB_ID)) {
             imdbId = getArguments().getString(ARG_IMDB_ID);
-            presenter.getMovieDetails(imdbId);
         }
     }
 
@@ -111,6 +110,7 @@ public class MovieDetailFragment extends BaseFragment implements MovieDetailsScr
     public void onResume() {
         super.onResume();
         presenter.attachScreen(this);
+        presenter.getMovieDetails(imdbId);
     }
 
     @Override

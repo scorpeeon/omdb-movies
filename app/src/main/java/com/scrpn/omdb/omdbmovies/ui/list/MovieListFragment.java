@@ -99,6 +99,7 @@ public class MovieListFragment extends BaseFragment implements MovieListScreen, 
     public void onResume() {
         super.onResume();
         presenter.attachScreen(this);
+        presenter.refreshItems(searchString.getText().toString());
     }
 
     @Override

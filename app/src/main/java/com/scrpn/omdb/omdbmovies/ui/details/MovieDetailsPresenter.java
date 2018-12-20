@@ -1,24 +1,17 @@
 package com.scrpn.omdb.omdbmovies.ui.details;
 
-import android.support.annotation.NonNull;
-
 import com.scrpn.omdb.omdbmovies.BuildConfig;
-import com.scrpn.omdb.omdbmovies.Presenter;
+import com.scrpn.omdb.omdbmovies.RxPresenter;
 import com.scrpn.omdb.omdbmovies.network.OmdbApi;
 import com.scrpn.omdb.omdbmovies.network.model.DetailedMovie;
-
-import java.net.HttpURLConnection;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class MovieDetailsPresenter extends Presenter<MovieDetailsScreen> {
+public class MovieDetailsPresenter extends RxPresenter<MovieDetailsScreen> {
     @Inject
     OmdbApi apiService;
 
@@ -32,8 +25,8 @@ public class MovieDetailsPresenter extends Presenter<MovieDetailsScreen> {
         if (screen != null) {
             screen.showLoading(true);
         }
-        Observable<DetailedMovie> movie = apiService.getMovie(imdbId, BuildConfig.OMDB_API_KEY);
-        movie
+        attachDisposable(
+                apiService.getMovie(imdbId, BuildConfig.OMDB_API_KEY)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -41,8 +34,10 @@ public class MovieDetailsPresenter extends Presenter<MovieDetailsScreen> {
                         screen.showLoading(false);
                         screen.onMovieLoaded(result);
                     }
-                });
-
-        // TODO call screen.onLoadFailed();
+                }, error -> {
+                    if (screen != null) {
+                        screen.onLoadFailed();
+                    }
+                }));
     }
 }
